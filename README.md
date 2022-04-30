@@ -1,4 +1,4 @@
-# PIB_dos_Municípios_Pernambucanos
+# PIB dos Municípios Pernambucanos
 
 > A Vue.js project
 
