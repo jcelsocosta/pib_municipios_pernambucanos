@@ -27,6 +27,7 @@ div.tooltip {
 </style>
 <script>
 import * as d3 from 'd3';
+import datasetPIB from '../../data/datasetPIB.json';
 
 export default {
   data() {
@@ -18496,6 +18497,35 @@ export default {
         },
       ],
     };
+
+    let citiesLength = 0;
+
+    const mesoregion = [];
+
+    const economicAtivity = [
+      'Agropecuária',
+      'Indústria',
+      'Serviços',
+      'Administrção, Defesa, Educação, Saúde Pública e Seguridade Social',
+    ];
+
+    datasetPIB.forEach((element) => {
+      if (element.Ano === '2010') {
+        citiesLength += 1;
+
+        if (mesoregion.indexOf(element.NameMesoregion) === -1) {
+          mesoregion.push(element.NameMesoregion);
+        }
+      }
+    });
+    // eslint-disable-next-line
+    console.log(
+      'Municipios quantidade',
+      citiesLength,
+      mesoregion,
+      name,
+      economicAtivity
+    );
 
     const div = d3
       .select('body')
