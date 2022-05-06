@@ -1,6 +1,8 @@
 <template>
   <div id="chart">
     <h1>PIB dos Municípios de Pernambuco</h1>
+
+    <linearChart />
   </div>
 </template>
 <style>
@@ -26,10 +28,13 @@ div.tooltip {
 }
 </style>
 <script>
-import * as d3 from 'd3';
-import datasetPIB from '../../data/datasetPIB.json';
+import linearChart from '../../components/charts/linearChart/LinearChart';
 
 export default {
+  components: {
+    linearChart,
+  },
+
   data() {
     return {};
   },
@@ -40,7 +45,9 @@ export default {
       console.log(file);
     },
   },
+  /*
   async mounted() {
+    /*
     const height = 450;
     const width = 850;
     const path = d3.geoPath();
@@ -18566,6 +18573,7 @@ export default {
           .style('top', '0px');
       });
   },
+  */
 };
 </script>
 

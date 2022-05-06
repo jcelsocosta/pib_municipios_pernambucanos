@@ -32,7 +32,7 @@ module.exports = {
     }],
     // disallow reassignment of function parameters
     // disallow parameter object manipulation except for specific exclusions
-    'no-param-reassign': ['error', {
+    'no-param-reassign': [0, {
       props: true,
       ignorePropertyModificationsFor: [
         'state', // for vuex state
