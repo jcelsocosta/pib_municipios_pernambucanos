@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div id="linear-chart"></div>
 </template>
 
 <script>
@@ -23,8 +23,8 @@ export default {
 
   methods: {
     createSvg() {
-      this.svg = d3.select('#chart').append('svg')
-        .attr('id', 'svg')
+      this.svg = d3.select('#linear-chart').append('svg')
+        .attr('id', 'svg-linear-chart')
         .attr('width', this.width + this.margin.left + this.margin.right)
         .attr('height', this.height + this.margin.top + this.margin.bottom)
         .append('g')

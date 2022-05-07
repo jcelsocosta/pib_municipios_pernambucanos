@@ -1,8 +1,7 @@
 <template>
   <div id="chart">
     <h1>PIB dos Municípios de Pernambuco</h1>
-
-    <linearChart />
+    <pieChart />
   </div>
 </template>
 <style>
@@ -28,11 +27,11 @@ div.tooltip {
 }
 </style>
 <script>
-import linearChart from '../../components/charts/linearChart/LinearChart';
+import pieChart from '../../components/charts/PieChart/PieChart';
 
 export default {
   components: {
-    linearChart,
+    pieChart,
   },
 
   data() {
