@@ -11,7 +11,6 @@ export default {
       width: 0,
       radius: 200,
       svg: undefined,
-      tooltip: undefined,
       data: [
         { name: 'Alex', share: 20.70, },
         { name: 'Shelly', share: 30.82, },
