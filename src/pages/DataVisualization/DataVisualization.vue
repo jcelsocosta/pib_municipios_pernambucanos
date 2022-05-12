@@ -1,14 +1,14 @@
 <template>
   <div id="chart">
     <h1>PIB dos Municípios de Pernambuco</h1>
-    <mapChart />
+    <stackedBar />
   </div>
 </template>
 <style>
 
 </style>
 <script>
-import mapChart from '../../components/charts/Map/Map';
+import stackedBar from '../../components/charts/StackedBar/StackedBar';
 
 export default {
   data() {
@@ -16,7 +16,7 @@ export default {
   },
 
   components: {
-    mapChart,
+    stackedBar,
   },
 };
 </script>
