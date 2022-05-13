@@ -1,14 +1,14 @@
 <template>
   <div id="chart">
     <h1>PIB dos Municípios de Pernambuco</h1>
-    <stackedBar />
+    <linear />
   </div>
 </template>
 <style>
 
 </style>
 <script>
-import stackedBar from '../../components/charts/StackedBar/StackedBar';
+import linear from '../../components/DashboardPrincipal/linearChart/LinearChart';
 
 export default {
   data() {
@@ -16,7 +16,7 @@ export default {
   },
 
   components: {
-    stackedBar,
+    linear,
   },
 };
 </script>
