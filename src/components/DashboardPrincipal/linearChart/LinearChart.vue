@@ -4,7 +4,7 @@
 
 <script>
 import * as d3 from 'd3';
-import data from './data/dataAux.json';
+import data from './data/data.json';
 
 export default {
   data() {
