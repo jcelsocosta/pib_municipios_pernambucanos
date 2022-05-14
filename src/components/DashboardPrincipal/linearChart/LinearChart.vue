@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import * as d3 from 'd3';
 import data from './data/data.json';
 
@@ -13,7 +14,7 @@ export default {
       width: 0,
       height: 0,
       parseTime: d3.timeParse('%d/%m/%Y'),
-      anoFormat: d3.timeParse('%d/%m/%Y'),
+      anoFormat: moment().format('YYYY'),
       x: 0,
       y: 0,
       svg: undefined,
@@ -85,8 +86,8 @@ export default {
         .text('●');
 
       text.append('tspan')
-        .attr('dx', '5')
-        .text('Cours : ');
+        .attr('dx', '2')
+        .text('PIB : ');
 
       text.append('tspan')
         .attr('id', 'tooltip-pib')
@@ -110,20 +111,21 @@ export default {
           const d = data[i];
           this.tooltip.attr('transform', `translate(${this.x(d.ano)}, ${this.y(d.pib)})`);
           d3.select('#tooltip-ano')
-            .text(d.ano);
+            .text('');
           d3.select('#tooltip-pib')
-            .text(`${d.pib}$`);
+            .text(`R$: ${parseFloat(d.pib).toLocaleString('pt-br', { minimumFractionDigits: 2, })}`);
         });
     },
 
     axiosAndLine() {
       data.forEach((d) => {
-        d.ano = this.anoFormat(d.ano);
+        d.ano = moment(`${d.ano}`, 'YYYY');
         d.pib = +d.pib;
       });
 
-      data.sort((a, b) => a.ano - b.ano);
-
+      // data.sort((a, b) => a.ano - b.ano);
+      // eslint-disable-next-line
+      console.log('this.data', data)
       this.x.domain(d3.extent(data, d => d.ano));
 
       this.y.domain(d3.extent(data, d => d.pib));
@@ -144,20 +146,21 @@ export default {
       this.svg.append('g')
         .call(d3.axisLeft(this.y))
         .append('text')
-        .attr('fill', '#000')
+        .attr('fill', '#yellow')
         .attr('transform', 'rotate(-90)')
         .attr('y', 6)
-        .attr('dy', '0.71em')
-        .style('text-anchor', 'end')
-        .text('$');
+        .attr('dy', '0.51em')
+        .style('text-anchor', 'end');
 
-      this.svg.selectAll('y axis').data(this.y.ticks(10)).enter()
+      this.svg.selectAll('y axis')
+        .data(this.y.ticks(null, data.format))
+        .enter()
         .append('line')
         .attr('class', 'horizontalGrid')
         .attr('x1', 0)
         .attr('x2', this.width)
-        .attr('y1', d => this.y(d))
-        .attr('y2', d => this.y(d));
+        .attr('y1', d => this.y(d.pib))
+        .attr('y2', d => this.y(d.pib));
 
       this.svg.append('path')
         .datum(data)
@@ -198,7 +201,7 @@ export default {
     this.width = 800 - this.margin.left - this.margin.right;
     this.height = 400 - this.margin.top - this.margin.bottom;
     this.x = d3.scaleTime().range([0, this.width]);
-    this.y = d3.scaleTime().range([this.height, 0]);
+    this.y = d3.scaleLinear().range([this.height, 0]);
 
     this.createSvg();
   },
