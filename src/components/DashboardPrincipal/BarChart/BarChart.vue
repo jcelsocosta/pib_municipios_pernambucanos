@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3>Top 10 PIB's de Pernambuco</h3>
     <select v-model="selected">
       <option disabled value>Selecione um ano</option>
       <option v-for="option in options" :value="option.value" :key="option.value">
