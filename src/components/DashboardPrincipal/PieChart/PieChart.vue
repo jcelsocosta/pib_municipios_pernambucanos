@@ -177,12 +177,18 @@ export default {
         .text('São Francisco Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
+
+        this.svg.append("g")
+               .attr("transform", "translate(" + (this.width / 2 - 5) + "," + 20 + ")")
+               .append("text")
+               .text("PIB por Mesorregiões de Pernambuco")
+               .attr("class", "title")
     },
   },
 
   mounted() {
     this.width = 500;
-    this.height = 400;
+    this.height = 500;
     this.createPieChart();
     this.filteredDataTotal();
   },
