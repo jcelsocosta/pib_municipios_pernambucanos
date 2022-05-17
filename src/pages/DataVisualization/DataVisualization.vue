@@ -18,9 +18,11 @@
              <pieChart />
         </div>
       </div>
-      <div class="row mt-4 ms-4" data-aos="fade-up">
+        <h3>Mapa de Pernambuco</h3>
+        <h6>Compare até três Municípios</h6>
+        <mapPernambuco />
+        <div class="row mt-4 ms-4" data-aos="fade-up">
         <div class="col-md-6 col-lg-6 d-flex">
-             <mapPernambuco />
         </div>
       </div>
     </section>

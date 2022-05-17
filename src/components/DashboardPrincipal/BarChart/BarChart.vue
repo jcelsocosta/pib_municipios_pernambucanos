@@ -55,7 +55,7 @@ export default {
           cont += 1;
         }
       });
-      this.maxValue = parseFloat(this.dataAux[0].ProdutoInternoBrutoPrecosCorrentesMilReais);
+      this.maxValue = parseFloat(this.dataAux[0].ProdutoInternoBrutoPrecosCorrentesMilReais * 1000);
     },
 
     createSvg() {
@@ -63,7 +63,7 @@ export default {
         .append('svg')
         .attr('height', this.height - this.margin.top - this.margin.bottom)
         .attr('width', this.width)
-        .attr('viewBox', [0, 0, this.width, this.height + 25]);
+        .attr('viewBox', [0, 0, this.width, this.height + 55]);
     },
 
     createChartBar() {
@@ -124,10 +124,10 @@ export default {
         .attr('height', this.y.bandwidth())
         .attr('class', 'rectangle')
         .attr('width', d => this.x(
-          parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais)))
+          parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000)))
         .on('mouseover', (e, d) => {
           tooldiv.style('visibility', 'visible')
-            .text(`PIB: R$ ${parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais)
+            .text(`PIB: R$ ${parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000)
               .toLocaleString('pt-br', { minimumFractionDigits: 2, })}`);
         })
         .on('mousemove', (e) => {
@@ -138,65 +138,65 @@ export default {
 
       this.svg.append('circle')
         .attr('cx', 200)
-        .attr('cy', this.height - this.margin.legendBottom)
+        .attr('cy', this.height + this.margin.legendBottom)
         .attr('r', 6)
         .style('fill', '#c33a38');
 
       this.svg.append('text')
         .attr('x', 215)
-        .attr('y', this.height - this.margin.legendBottom)
+        .attr('y', this.height + this.margin.legendBottom)
         .text('Região Metropolitana do Recife')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
         .attr('cx', 470)
-        .attr('cy', this.height - this.margin.legendBottom)
+        .attr('cy', this.height + this.margin.legendBottom)
         .attr('r', 6)
         .style('fill', '#dba88b');
 
       this.svg.append('text')
         .attr('x', 485)
-        .attr('y', this.height - this.margin.legendBottom)
+        .attr('y', this.height + this.margin.legendBottom)
         .text('Agreste Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
         .attr('cx', 200)
-        .attr('cy', this.height - this.margin.legendBottomTwo)
+        .attr('cy', this.height + this.margin.legendBottomTwo)
         .attr('r', 6)
         .style('fill', '#44cd42');
 
       this.svg.append('text')
         .attr('x', 215)
-        .attr('y', this.height - this.margin.legendBottomTwo)
+        .attr('y', this.height + this.margin.legendBottomTwo)
         .text('Mata Pernambucana')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
         .attr('cx', 470)
-        .attr('cy', this.height - this.margin.legendBottomTwo)
+        .attr('cy', this.height + this.margin.legendBottomTwo)
         .attr('r', 6)
         .style('fill', '#cd8642');
 
       this.svg.append('text')
         .attr('x', 485)
-        .attr('y', this.height - this.margin.legendBottomTwo)
+        .attr('y', this.height + this.margin.legendBottomTwo)
         .text('Sertão Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
         .attr('cx', 670)
-        .attr('cy', this.height - this.margin.legendBottom)
+        .attr('cy', this.height + this.margin.legendBottomTwo)
         .attr('r', 6)
         .style('fill', '#4289cd');
 
       this.svg.append('text')
         .attr('x', 685)
-        .attr('y', this.height - this.margin.legendBottom)
+        .attr('y', this.height + this.margin.legendBottomTwo)
         .text('São Francisco Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
@@ -224,10 +224,6 @@ export default {
 <style>
 #div_title {
   text-align: center;
-}
-
-svg {
-  border: 1px solid lightgray;
 }
 
 .rectangle:hover {

@@ -55,8 +55,9 @@ export default {
       this.svg = d3.select('#pie-chart')
         .append('svg')
         .attr('id', 'svg-pie-chart')
-        .attr('width', this.width + 300)
-        .attr('height', this.height + 50);
+        .attr('width', this.width + 150)
+        .attr('height', this.height + 50)
+        .attr('viewBox', [-5, -80, this.width + 400, this.height + 300]);
 
       const g = this.svg.append('g')
         .attr('transform', `translate(${this.width / 2}, ${this.height / 2})`);
@@ -114,75 +115,79 @@ export default {
         .style('font-size', 15);
 
       this.svg.append('circle')
-        .attr('cx', 500)
-        .attr('cy', this.margin.legendBottom)
+        .attr('cx', 600)
+        .attr('cy', this.margin.legendBottom + 50)
         .attr('r', 6)
         .style('fill', '#c33a38');
 
       this.svg.append('text')
-        .attr('x', 515)
-        .attr('y', this.margin.legendBottom)
+        .attr('x', 615)
+        .attr('y', this.margin.legendBottom + 50)
         .text('Região Metropolitana do Recife')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
-        .attr('cx', 500)
-        .attr('cy', 2 * this.margin.legendBottom)
+        .attr('cx', 600)
+        .attr('cy', (2 * this.margin.legendBottom) + 50)
         .attr('r', 6)
         .style('fill', '#44cd42');
 
       this.svg.append('text')
-        .attr('x', 515)
-        .attr('y', 2 * this.margin.legendBottom)
+        .attr('x', 615)
+        .attr('y', (2 * this.margin.legendBottom) + 50)
         .text('Mata Pernambucana')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
-        .attr('cx', 500)
-        .attr('cy', 3 * this.margin.legendBottom)
+        .attr('cx', 600)
+        .attr('cy', (3 * this.margin.legendBottom) + 50)
         .attr('r', 6)
         .style('fill', '#dba88b');
 
       this.svg.append('text')
-        .attr('x', 515)
-        .attr('y', 3 * this.margin.legendBottom)
+        .attr('x', 615)
+        .attr('y', (3 * this.margin.legendBottom) + 50)
         .text('Agreste Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
-        .attr('cx', 500)
-        .attr('cy', 4 * this.margin.legendBottom)
+        .attr('cx', 600)
+        .attr('cy', (4 * this.margin.legendBottom) + 50)
         .attr('r', 6)
         .style('fill', '#cd8642');
 
       this.svg.append('text')
-        .attr('x', 515)
-        .attr('y', 4 * this.margin.legendBottom)
+        .attr('x', 615)
+        .attr('y', (4 * this.margin.legendBottom) + 50)
         .text('Sertão Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
-        .attr('cx', 500)
-        .attr('cy', 5 * this.margin.legendBottom)
+        .attr('cx', 600)
+        .attr('cy', (5 * this.margin.legendBottom) + 50)
         .attr('r', 6)
         .style('fill', '#4289cd');
 
       this.svg.append('text')
-        .attr('x', 515)
-        .attr('y', 5 * this.margin.legendBottom)
+        .attr('x', 615)
+        .attr('y', (5 * this.margin.legendBottom) + 50)
         .text('São Francisco Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
-        this.svg.append("g")
-               .attr("transform", "translate(" + (this.width / 2 - 5) + "," + 20 + ")")
-               .append("text")
-               .text("PIB por Mesorregiões de Pernambuco")
-               .attr("class", "title")
+      this.svg.append('g')
+        .attr('transform', `translate('${this.width / 4}, ${this.height / 2}')`)
+        .append('text')
+        .style('fill', '#5a5a5a')
+        .style('font-family', 'Raleway')
+        .style('font-weight', '200')
+        .style('font-size', '24px')
+        .text('PIB por Mesorregiões de Pernambuco')
+        .attr('class', 'title');
     },
   },
 

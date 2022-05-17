@@ -33,7 +33,7 @@ module.exports = {
     // disallow reassignment of function parameters
     // disallow parameter object manipulation except for specific exclusions
     'no-param-reassign': [0, {
-      props: true,
+      props: false,
       ignorePropertyModificationsFor: [
         'state', // for vuex state
         'acc', // for reduce accumulators

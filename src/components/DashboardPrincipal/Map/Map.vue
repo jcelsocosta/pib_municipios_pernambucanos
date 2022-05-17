@@ -1,9 +1,19 @@
 <template>
-  <div id="chart-map"></div>
+<div>
+  <div class="row mt-4 ms-4" data-aos="fade-up">
+    <div class="col-md-6 mt-3 col-lg-6 d-flex">
+      <div id="chart-map"></div>
+    </div>
+    <div class="col-md-6 col-lg-6 d-flex">
+     <multipleLines :nameArray="arrayNames"/>
+    </div>
+  </div>
+</div>
 </template>
 <script>
 import * as d3 from 'd3';
 import pernambucoMap from './data/geojson.json';
+import multipleLines from '../MultipleLines/MultipleLines';
 
 export default {
   data() {
@@ -17,7 +27,12 @@ export default {
       zoom: undefined,
       g: undefined,
       color: undefined,
+      arrayNames: [],
     };
+  },
+
+  components: {
+    multipleLines,
   },
 
   methods: {
@@ -29,8 +44,8 @@ export default {
 
       this.projection = d3
         .geoConicConformal()
-        .center([-37.946777, -8.472372])
-        .scale(3000)
+        .center([-37.946777, -6.472372])
+        .scale(2500)
         .translate([this.width / 2, this.height / 2])
         .rotate([0, 2]);
 
@@ -70,11 +85,7 @@ export default {
             .duration(200)
             .style('opacity', 0.9);
           div.html(
-            `Nome :
-              ${properties.name}
-              <br/>
-              Descrição :
-              ${properties.description}`
+            `${properties.name}`
           );
         })
         .on('mousemove', (e) => {
@@ -103,38 +114,25 @@ export default {
       this.svg.call(zoom);
     },
 
-    clicked(d) {
-      let k = 0;
-      let x = 0;
-      let y = 0;
+    clicked(e, d) {
+      if (!this.arrayNames) {
+        this.arrayNames.push(d.properties.name);
+      } else if (this.arrayNames) {
+        const flag = this.arrayNames.find(el => el === d.properties.name);
+        if (flag) {
+          const index = this.arrayNames.indexOf(el => el === d.properties.name);
 
-      if (d && this.centered !== d) {
-        const centroid = this.path.centroid(d);
-        x = centroid[0];
-        y = centroid[1];
-        k = 4;
-        this.centered = d;
-      } else {
-        x = this.width / 2;
-        y = this.height / 2;
-        k = 1;
-        this.centered = null;
+          this.arrayNames.splice(index, 1);
+        } else if (!flag && this.arrayNames.length < 3) {
+          this.arrayNames.push(d.properties.name);
+        }
       }
-      // eslint-disable-next-line
-      console.log(x, y, this.path.centroid(d));
-      this.g.selectAll('path')
-        .classed('active', this.centered && d === this.centered);
-
-      this.g.transition()
-        .duration(750)
-        .attr('transform', `translate(${this.width / 2}, ${this.height / 2})scale(${k})translate(${-x},${-y})`)
-        .style('stroke-width', `${1.5 / k}px`);
     },
   },
 
   mounted() {
-    this.width = 850;
-    this.height = 450;
+    this.width = 630;
+    this.height = 350;
 
     this.createMap();
   },
@@ -152,12 +150,12 @@ div.tooltip {
   text-align: center;
   z-index: 1000;
   color: black;
-  width: 275px;
-  height: 37px;
+  width: 200px;
+  height: 25px;
   padding: 2px;
   font: 12px sans-serif;
-  background: grey;
-  border: 0px;
+  background: #fafafa;
+  border: 1px solid #3498db;
   border-radius: 8px;
   pointer-events: none;
 }

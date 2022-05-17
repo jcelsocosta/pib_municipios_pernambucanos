@@ -262,16 +262,6 @@ export default {
 };
 </script>
 <style>
-#svg {
-    display: block;
-    margin: auto;
-}
-
-#chart {
-    margin-top: 20px;
-    border: 1px solid #DEDEDE;
-}
-
 .axis path, .axis line {
     fill: none;
     stroke: #000;
