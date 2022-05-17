@@ -5,6 +5,7 @@
 <script>
 import moment from 'moment';
 import * as d3 from 'd3';
+import dataAux from '../../../data/pibpeformated.json';
 import data from './data/data.json';
 
 export default {
@@ -19,16 +20,76 @@ export default {
       y: 0,
       svg: undefined,
       tooltip: undefined,
-      data: undefined,
+      dataSelected: undefined,
     };
   },
 
   methods: {
+    readFile() {
+      let pibAno2010 = 0;
+      let pibAno2011 = 0;
+      let pibAno2012 = 0;
+      let pibAno2013 = 0;
+      let pibAno2014 = 0;
+      let pibAno2015 = 0;
+      let pibAno2016 = 0;
+      let pibAno2017 = 0;
+      let pibAno2018 = 0;
+      let pibAno2019 = 0;
+
+      dataAux.forEach((el) => {
+        if (el.Ano === 2010) {
+          pibAno2010 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2011) {
+          pibAno2011 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2012) {
+          pibAno2012 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2013) {
+          pibAno2013 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2014) {
+          pibAno2014 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2015) {
+          pibAno2015 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2016) {
+          pibAno2016 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2017) {
+          pibAno2017 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2018) {
+          pibAno2018 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+
+        if (el.Ano === 2019) {
+          pibAno2019 += el.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        }
+      });
+      // eslint-disable-next-line
+      console.log('PIBs', pibAno2010, pibAno2011, pibAno2012, pibAno2013,
+        pibAno2014, pibAno2015, pibAno2016, pibAno2017, pibAno2018, pibAno2019);
+      // eslint-disable-next-line
+      // console.log('PIB formatado', pibAno2010.toLocaleString('pt-br', { minimumFractionDigits: 2 }));
+    },
     createSvg() {
       this.svg = d3.select('#linear-chart').append('svg')
         .attr('id', 'svg-linear-chart')
-        .attr('width', this.width + this.margin.left + this.margin.right)
+        .attr('width', this.width + 200)
         .attr('height', this.height + this.margin.top + this.margin.bottom)
+        .attr('viewBox', [+10, 0, this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom])
         .append('g')
         .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
@@ -40,7 +101,7 @@ export default {
         .style('font-family', 'Raleway')
         .style('font-weight', '300')
         .style('font-size', '24px')
-        .text('Pib dos Municípios Pernambucanos');
+        .text('PIB acumulado entre os anos de 2010 à 2019');
 
       this.axiosAndLine();
     },
@@ -69,20 +130,16 @@ export default {
         .attr('transform', 'translate(-60, -55)');
 
       const text = this.tooltip.append('text')
-        .style('font-size', '13px')
+        .style('font-size', '9px')
         .style('font-family', 'Segoe UI')
         .style('color', '#333333')
         .style('fill', '#333333')
         .attr('transform', 'translate(-50, -40)');
 
       text.append('tspan')
-        .attr('dx', '-5')
-        .attr('id', 'tooltip-ano');
-
-      text.append('tspan')
         .style('fill', '#3498db')
         .attr('dx', '0')
-        .attr('dy', '15')
+        .attr('dy', '10')
         .text('●');
 
       text.append('tspan')
@@ -98,7 +155,7 @@ export default {
       this.svg.append('rect')
         .attr('class', 'overlay')
         .attr('width', this.width)
-        .attr('height', this.height)
+        .attr('height', this.height + this.margin.top)
         .on('mouseover', () => {
           this.tooltip.style('display', null);
         })
@@ -110,10 +167,8 @@ export default {
           const i = bisectano(data, x0);
           const d = data[i];
           this.tooltip.attr('transform', `translate(${this.x(d.ano)}, ${this.y(d.pib)})`);
-          d3.select('#tooltip-ano')
-            .text('');
           d3.select('#tooltip-pib')
-            .text(`R$: ${parseFloat(d.pib).toLocaleString('pt-br', { minimumFractionDigits: 2, })}`);
+            .text(`R$: ${d.pib.toLocaleString('pt-br', { minimumFractionDigits: 0, })}`);
         });
     },
 
@@ -125,10 +180,10 @@ export default {
 
       // data.sort((a, b) => a.ano - b.ano);
       // eslint-disable-next-line
-      console.log('this.data', data)
+      // console.log('this.data', data)
       this.x.domain(d3.extent(data, d => d.ano));
 
-      this.y.domain(d3.extent(data, d => d.pib));
+      this.y.domain(d3.extent(data, d => parseFloat(d.pib)));
 
       const line = d3.line()
         .x(d => this.x(d.ano))
@@ -144,21 +199,20 @@ export default {
         .call(d3.axisBottom(this.x));
 
       this.svg.append('g')
-        .call(d3.axisLeft(this.y))
+        .call(d3.axisLeft(this.y).tickFormat(d => d.toLocaleString('pt-br', { minimumFractionDigits: 0, })))
         .append('text')
         .attr('fill', '#yellow')
         .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
+        .attr('y', 5)
         .attr('dy', '0.51em')
         .style('text-anchor', 'end');
 
       this.svg.selectAll('y axis')
-        .data(this.y.ticks(null, data.format))
+        .data(this.y.ticks(10))
         .enter()
         .append('line')
         .attr('class', 'horizontalGrid')
         .attr('x1', 0)
-        .attr('x2', this.width)
         .attr('y1', d => this.y(d.pib))
         .attr('y2', d => this.y(d.pib));
 
@@ -198,9 +252,9 @@ export default {
   },
 
   mounted() {
-    this.width = 800 - this.margin.left - this.margin.right;
+    this.width = 900;
     this.height = 400 - this.margin.top - this.margin.bottom;
-    this.x = d3.scaleTime().range([0, this.width]);
+    this.x = d3.scaleTime().range([1, this.width]);
     this.y = d3.scaleLinear().range([this.height, 0]);
 
     this.createSvg();

@@ -1,10 +1,29 @@
 <template>
   <div id="chart">
     <h1>PIB dos Municípios de Pernambuco</h1>
-    <linear />
-    <barChart />
-    <pieChart />
-    <mapPernambuco />
+    <section class="header-inner p-0 jarallax position-relative o-hidden"
+      data-overlay>
+      <div class="row mt-4 ms-4" data-aos="fade-up">
+        <div class="col-md-6 col-lg-6 d-flex">
+            <linear />
+        </div>
+      </div>
+      <div class="row mt-4 ms-4" data-aos="fade-up">
+        <div class="col-md-6 col-lg-6 d-flex">
+             <barChart />
+        </div>
+      </div>
+      <div class="row mt-4 ms-4" data-aos="fade-up">
+        <div class="col-md-6 col-lg-6 d-flex">
+             <pieChart />
+        </div>
+      </div>
+      <div class="row mt-4 ms-4" data-aos="fade-up">
+        <div class="col-md-6 col-lg-6 d-flex">
+             <mapPernambuco />
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 <style>

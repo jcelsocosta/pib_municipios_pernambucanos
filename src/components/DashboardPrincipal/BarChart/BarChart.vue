@@ -1,8 +1,7 @@
 <template>
   <div>
-    <div>Selected: {{ selected }}</div>
     <select v-model="selected">
-      <option disabled value>Please select one</option>
+      <option disabled value>Selecione um ano</option>
       <option v-for="option in options" :value="option.value" :key="option.value">
         {{ option.value }}</option>
     </select>
@@ -11,7 +10,7 @@
 </template>
 <script>
 import * as d3 from 'd3';
-import dataJSON from '../../../data/PIBFILTRADOPE.json';
+import data from '../../../data/pibpeformated.json';
 
 export default {
   data() {
@@ -24,18 +23,18 @@ export default {
       svg: undefined,
       x: 0,
       y: 0,
-      selected: '2010',
+      selected: 2010,
       options: [
-        { value: '2010', },
-        { value: '2011', },
-        { value: '2012', },
-        { value: '2013', },
-        { value: '2014', },
-        { value: '2015', },
-        { value: '2016', },
-        { value: '2017', },
-        { value: '2018', },
-        { value: '2019', },
+        { value: 2010, },
+        { value: 2011, },
+        { value: 2012, },
+        { value: 2013, },
+        { value: 2014, },
+        { value: 2015, },
+        { value: 2016, },
+        { value: 2017, },
+        { value: 2018, },
+        { value: 2019, },
       ],
     };
   },
@@ -46,34 +45,16 @@ export default {
       let cont = 0;
       this.maxValue = 0;
 
-      dataJSON.sort((a, b) => {
-        if (a.ProdutoInternoBrutoPrecosCorrentesMilReais
-        < b.ProdutoInternoBrutoPrecosCorrentesMilReais) {
-          return 1;
-        }
-        if (a.ProdutoInternoBrutoPrecosCorrentesMilReais
-        > b.ProdutoInternoBrutoPrecosCorrentesMilReais) {
-          return -1;
-        }
-        return 0;
-      });
-      // eslint-disable-next-line
-      // console.log(dataJSON);
+      data.sort((a, b) => (b.ProdutoInternoBrutoPrecosCorrentesMilReais
+        - a.ProdutoInternoBrutoPrecosCorrentesMilReais));
 
-      // eslint-disable-next-line
-      dataJSON.forEach((el) => {
-        if (el.Ano === this.selected && cont < 9) {
+      data.forEach((el) => {
+        if (el.Ano === this.selected && cont < 10) {
           this.dataAux.push(el);
           cont += 1;
-          // eslint-disable-next-line
-          // console.log(el.NomeDoMunicipio,` index: ${index}`)
         }
       });
       this.maxValue = parseFloat(this.dataAux[0].ProdutoInternoBrutoPrecosCorrentesMilReais);
-      // eslint-disable-next-line
-      // console.log(this.maxValue.toLocaleString('pt-br', { minimumFractionDigits: 2, }))
-      // eslint-disable-next-line
-      // console.log(this.dataAux);
     },
 
     createSvg() {
@@ -81,7 +62,7 @@ export default {
         .append('svg')
         .attr('height', this.height - this.margin.top - this.margin.bottom)
         .attr('width', this.width)
-        .attr('viewBox', [0, 0, this.width, this.height]);
+        .attr('viewBox', [0, 0, this.width, this.height + 25]);
     },
 
     createChartBar() {
@@ -91,7 +72,7 @@ export default {
 
       this.svg.append('g')
         .attr('transform', `translate(0, ${this.height - this.margin.top - this.margin.bottom})`)
-        .call(d3.axisBottom(this.x))
+        .call(d3.axisBottom(this.x).tickFormat(d => d.toLocaleString('pt-br', { minimumFractionDigits: 2, })))
         .selectAll('text')
         .attr('transform', 'translate(-10, 0)rotate(-45)')
         .style('text-anchor', 'end');
@@ -108,14 +89,35 @@ export default {
         .append('div')
         .style('visibilty', 'hidden')
         .style('position', 'absolute')
-        .style('background-color', 'red');
+        .style('background-color', '#fafafa')
+        .style('stroke', '#3498db')
+        .style('opacity', '0.9')
+        .style('stroke-width', '1')
+        .style('font-weight', 'bold')
+        .style('border', '1px solid #3498db')
+        .style('padding', '5px');
 
       this.svg.append('g')
-        .attr('fill', 'royalBlue')
         .attr('id', 'rect-chart')
         .selectAll('rect')
         .data(this.dataAux)
         .join('rect')
+        .attr('fill', (d) => {
+          let color = '';
+
+          if (d.NomeDaMesorregiao === 'São Francisco Pernambucano') {
+            color = '#4289cd';
+          } else if (d.NomeDaMesorregiao === 'Sertão Pernambucano') {
+            color = '#cd8642';
+          } else if (d.NomeDaMesorregiao === 'Mata Pernambucana') {
+            color = '#44cd42';
+          } else if (d.NomeDaMesorregiao === 'Agreste Pernambucano') {
+            color = '#dba88b';
+          } else if (d.NomeDaMesorregiao === 'Metropolitana de Recife') {
+            color = '#c33a38';
+          }
+          return color;
+        })
         .attr('x', (d, i) => this.x(i))
         .attr('y', d => this.y(d.NomeDoMunicipio))
         .attr('height', this.y.bandwidth())
@@ -124,7 +126,7 @@ export default {
           parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais)))
         .on('mouseover', (e, d) => {
           tooldiv.style('visibility', 'visible')
-            .text(`value: ${parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais)
+            .text(`PIB: R$ ${parseFloat(d.ProdutoInternoBrutoPrecosCorrentesMilReais)
               .toLocaleString('pt-br', { minimumFractionDigits: 2, })}`);
         })
         .on('mousemove', (e) => {
@@ -137,25 +139,25 @@ export default {
         .attr('cx', 200)
         .attr('cy', this.height - this.margin.legendBottom)
         .attr('r', 6)
-        .style('fill', '#69b3a2');
+        .style('fill', '#c33a38');
 
       this.svg.append('text')
-        .attr('x', 220)
+        .attr('x', 215)
         .attr('y', this.height - this.margin.legendBottom)
-        .text('variable A')
+        .text('Região Metropolitana do Recife')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
-        .attr('cx', 320)
+        .attr('cx', 470)
         .attr('cy', this.height - this.margin.legendBottom)
         .attr('r', 6)
-        .style('fill', '#404080');
+        .style('fill', '#dba88b');
 
       this.svg.append('text')
-        .attr('x', 340)
+        .attr('x', 485)
         .attr('y', this.height - this.margin.legendBottom)
-        .text('variable B')
+        .text('Agreste Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
@@ -163,25 +165,38 @@ export default {
         .attr('cx', 200)
         .attr('cy', this.height - this.margin.legendBottomTwo)
         .attr('r', 6)
-        .style('fill', '#69b3a2');
+        .style('fill', '#44cd42');
 
       this.svg.append('text')
-        .attr('x', 220)
+        .attr('x', 215)
         .attr('y', this.height - this.margin.legendBottomTwo)
-        .text('variable C')
+        .text('Mata Pernambucana')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
 
       this.svg.append('circle')
-        .attr('cx', 320)
+        .attr('cx', 470)
         .attr('cy', this.height - this.margin.legendBottomTwo)
         .attr('r', 6)
-        .style('fill', '#404080');
+        .style('fill', '#cd8642');
 
       this.svg.append('text')
-        .attr('x', 340)
+        .attr('x', 485)
         .attr('y', this.height - this.margin.legendBottomTwo)
-        .text('variable D')
+        .text('Sertão Pernambucano')
+        .style('font-size', '15px')
+        .attr('alignment-baseline', 'middle');
+
+      this.svg.append('circle')
+        .attr('cx', 670)
+        .attr('cy', this.height - this.margin.legendBottom)
+        .attr('r', 6)
+        .style('fill', '#4289cd');
+
+      this.svg.append('text')
+        .attr('x', 685)
+        .attr('y', this.height - this.margin.legendBottom)
+        .text('São Francisco Pernambucano')
         .style('font-size', '15px')
         .attr('alignment-baseline', 'middle');
     },
