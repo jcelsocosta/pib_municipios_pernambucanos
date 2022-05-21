@@ -1,8 +1,13 @@
 <template>
-<div>
-  <div id="multipleLines-chart"></div>
-  <button type="button" class="btn btn-primary" @click="compareTo()">Comparar</button>
-</div>
+  <div>
+    <select v-model="selected">
+      <option disabled value>Selecione um ano</option>
+      <option v-for="option in options" :value="option.value" :key="option.value">
+        {{ option.value }}</option>
+    </select>
+    <div id="multipleLines-chart"></div>
+    <button type="button" class="btn btn-primary" @click="compareTo()">Comparar</button>
+  </div>
 </template>
 <script>
 import * as d3 from 'd3';
@@ -27,12 +32,12 @@ export default {
       width: 0,
       height: 0,
       toggleButton: false,
+      target: 'ProdutoInternoBrutoPrecosCorrentesMilReais',
       x: 0,
       y: 0,
-      xScale: 0,
-      yScale: 0,
-      selected: 'Valores Brutos da Agropecuária',
+      selected: 'PIB total',
       options: [
+        { value: 'PIB total', opt: 0, },
         { value: 'Valores Brutos da Agropecuária', opt: 1, },
         { value: 'Valores Brutos da Indústria', pot: 2, },
         { value: 'Valores Brutos dos Serviços', opt: 3, },
@@ -54,6 +59,12 @@ export default {
         { date: '12-Apr-12', close: 622.77, open: 201.56, },
         { date: '11-Apr-12', close: 626.20, open: 212.67, },
       ],
+      menu: [
+        'ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais',
+        'ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais',
+        'ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais',
+        'ProdutoInternoBrutoPrecosCorrentesMilReais',
+      ],
     };
   },
 
@@ -61,7 +72,7 @@ export default {
     compareTo() {
       this.filterArray();
 
-      this.createChartMultiplesLines();
+      this.createChartMultiplesLines(this.target);
 
       this.toggleButton = true;
     },
@@ -102,69 +113,262 @@ export default {
         .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`)
         .attr('viewBox', [110, -10, this.width - 200, this.height + 200]);
     },
-    createChartMultiplesLines() {
+
+    createChartMultiplesLines(param) {
       const parseTime = d3.timeParse('%Y');
+      this.x = 0;
+      this.y = 0;
 
       this.x = d3.scaleTime().range([0, this.width]);
 
       this.y = d3.scaleLinear().range([this.height, 0]);
 
-      const valueLine = d3.line()
-        .x(d => this.x(d.Ano))
-        .y(d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
+      if (param === 'ProdutoInternoBrutoPrecosCorrentesMilReais') {
+        const valueLine = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
 
-      const valueLine2 = d3.line()
-        .x(d => this.x(d.Ano))
-        .y(d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
+        const valueLine2 = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
 
-      const valueLine3 = d3.line()
-        .x(d => this.x(d.Ano))
-        .y(d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
+        const valueLine3 = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
 
-      this.data1Aux.forEach((d) => {
-        d.date = parseTime(d.Ano);
-        d.ProdutoInternoBrutoPrecosCorrentesMilReais
-          = +d.ProdutoInternoBrutoPrecosCorrentesMilReais;
-      });
+        this.data1Aux.forEach((d) => {
+          d.date = parseTime(d.Ano);
+          d.ProdutoInternoBrutoPrecosCorrentesMilReais
+            = +d.ProdutoInternoBrutoPrecosCorrentesMilReais;
+        });
 
-      this.x.domain(d3.extent(this.data0Aux, d => d.Ano));
+        this.x.domain(d3.extent(this.data0Aux, d => d.Ano));
 
-      this.y.domain([0, d3.max(this.data0Aux, d => Math
-        .max(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000))]);
+        this.y.domain([0, d3.max(this.data0Aux, d => Math
+          .max(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000))]);
 
-      this.svg.append('path')
-        .data([this.data1Aux])
-        .attr('class', 'line')
-        .style('stroke', '#c33a38')
-        .attr('d', valueLine);
+        this.svg.append('path')
+          .data([this.data1Aux])
+          .attr('class', 'line')
+          .style('stroke', '#c33a38')
+          .attr('d', valueLine);
 
-      this.svg.append('path')
-        .data([this.data2Aux])
-        .attr('class', 'line')
-        .style('stroke', '#44cd42')
-        .attr('d', valueLine2);
+        this.svg.append('path')
+          .data([this.data2Aux])
+          .attr('class', 'line')
+          .style('stroke', '#44cd42')
+          .attr('d', valueLine2);
 
-      this.svg.append('path')
-        .data([this.data3Aux])
-        .attr('class', 'line')
-        .style('stroke', '#4289cd')
-        .attr('d', valueLine3);
+        this.svg.append('path')
+          .data([this.data3Aux])
+          .attr('class', 'line')
+          .style('stroke', '#4289cd')
+          .attr('d', valueLine3);
 
-      this.svg.selectAll('circle')
-        .append('g')
-        .data(this.data0Aux)
-        .enter()
-        .append('circle')
-        .attr('r', 5)
-        .attr('cx', d => this.x(d.Ano))
-        .attr('cy', d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
+        this.svg.selectAll('circle')
+          .append('g')
+          .data(this.data0Aux)
+          .enter()
+          .append('circle')
+          .attr('r', 5)
+          .attr('id', 'circlePoints')
+          .attr('cx', d => this.x(d.Ano))
+          .attr('cy', d => this.y(d.ProdutoInternoBrutoPrecosCorrentesMilReais * 1000));
 
-      this.svg.append('g')
-        .attr('transform', `translate(0, ${this.height})`)
-        .call(d3.axisBottom(this.x));
+        this.svg.append('g')
+          .attr('transform', `translate(0, ${this.height})`)
+          .call(d3.axisBottom(this.x));
 
-      this.svg.append('g')
-        .call(d3.axisLeft(this.y));
+        this.svg.append('g')
+          .call(d3.axisLeft(this.y));
+      }
+
+      if (param === 'ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais') {
+        const valueLine = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais * 1000));
+
+        const valueLine2 = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais * 1000));
+
+        const valueLine3 = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais * 1000));
+
+        this.data1Aux.forEach((d) => {
+          d.date = parseTime(d.Ano);
+          d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais
+            = +d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais;
+        });
+
+        this.x.domain(d3.extent(this.data0Aux, d => d.Ano));
+
+        this.y.domain([0, d3.max(this.data0Aux, d => Math
+          .max(d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais * 1000))]);
+
+        this.svg.append('path')
+          .data([this.data1Aux])
+          .attr('class', 'line')
+          .style('stroke', '#c33a38')
+          .attr('d', valueLine);
+
+        this.svg.append('path')
+          .data([this.data2Aux])
+          .attr('class', 'line')
+          .style('stroke', '#44cd42')
+          .attr('d', valueLine2);
+
+        this.svg.append('path')
+          .data([this.data3Aux])
+          .attr('class', 'line')
+          .style('stroke', '#4289cd')
+          .attr('d', valueLine3);
+
+        this.svg.selectAll('circle')
+          .append('g')
+          .data(this.data0Aux)
+          .enter()
+          .append('circle')
+          .attr('id', 'circlePoints')
+          .attr('r', 5)
+          .attr('cx', d => this.x(d.Ano))
+          .attr('cy', d => this.y(d.ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais * 1000));
+
+        this.svg.append('g')
+          .attr('transform', `translate(0, ${this.height})`)
+          .call(d3.axisBottom(this.x));
+
+        this.svg.append('g')
+          .call(d3.axisLeft(this.y));
+      }
+
+      if (param === 'ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais') {
+        const valueLine = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais * 1000));
+
+        const valueLine2 = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais * 1000));
+
+        const valueLine3 = d3.line()
+          .x(d => this.x(d.Ano))
+          .y(d => this.y(d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais * 1000));
+
+        this.data1Aux.forEach((d) => {
+          d.date = parseTime(d.Ano);
+          d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais
+            = +d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais;
+        });
+
+        this.x.domain(d3.extent(this.data0Aux, d => d.Ano));
+
+        this.y.domain([0, d3.max(this.data0Aux, d => Math
+          .max(d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais * 1000))]);
+
+        this.svg.append('path')
+          .data([this.data1Aux])
+          .attr('class', 'line')
+          .style('stroke', '#c33a38')
+          .attr('d', valueLine);
+
+        this.svg.append('path')
+          .data([this.data2Aux])
+          .attr('class', 'line')
+          .style('stroke', '#44cd42')
+          .attr('d', valueLine2);
+
+        this.svg.append('path')
+          .data([this.data3Aux])
+          .attr('class', 'line')
+          .style('stroke', '#4289cd')
+          .attr('d', valueLine3);
+
+        this.svg.selectAll('circle')
+          .append('g')
+          .data(this.data0Aux)
+          .enter()
+          .append('circle')
+          .attr('id', 'circlePoints')
+          .attr('r', 5)
+          .attr('cx', d => this.x(d.Ano))
+          .attr('cy', d => this.y(d.ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais * 1000));
+
+        this.svg.append('g')
+          .attr('transform', `translate(0, ${this.height})`)
+          .call(d3.axisBottom(this.x));
+
+        this.svg.append('g')
+          .call(d3.axisLeft(this.y));
+      }
+
+      if (param === 'ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais') {
+        const valueLine = d3.line()
+          .x(d => this.x(d.Ano))
+          // eslint-disable-next-line
+          .y(d => this.y(d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais * 1000));
+
+        const valueLine2 = d3.line()
+          .x(d => this.x(d.Ano))
+          // eslint-disable-next-line
+          .y(d => this.y(d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais * 1000));
+
+        const valueLine3 = d3.line()
+          .x(d => this.x(d.Ano))
+          // eslint-disable-next-line
+          .y(d => this.y(d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais * 1000));
+
+        this.data1Aux.forEach((d) => {
+          d.date = parseTime(d.Ano);
+          // eslint-disable-next-line
+          d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais
+            // eslint-disable-next-line
+            = +d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais;
+        });
+
+        this.x.domain(d3.extent(this.data0Aux, d => d.Ano));
+
+        this.y.domain([0, d3.max(this.data0Aux, d => Math
+        // eslint-disable-next-line
+          .max(d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais * 1000))]);
+
+        this.svg.append('path')
+          .data([this.data1Aux])
+          .attr('class', 'line')
+          .style('stroke', '#c33a38')
+          .attr('d', valueLine);
+
+        this.svg.append('path')
+          .data([this.data2Aux])
+          .attr('class', 'line')
+          .style('stroke', '#44cd42')
+          .attr('d', valueLine2);
+
+        this.svg.append('path')
+          .data([this.data3Aux])
+          .attr('class', 'line')
+          .style('stroke', '#4289cd')
+          .attr('d', valueLine3);
+
+        this.svg.selectAll('circle')
+          .append('g')
+          .data(this.data0Aux)
+          .enter()
+          .append('circle')
+          .attr('id', 'circlePoints')
+          .attr('r', 5)
+          .attr('cx', d => this.x(d.Ano))
+          // eslint-disable-next-line
+          .attr('cy', d => this.y(d.ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais * 1000));
+
+        this.svg.append('g')
+          .attr('transform', `translate(0, ${this.height})`)
+          .call(d3.axisBottom(this.x));
+
+        this.svg.append('g')
+          .call(d3.axisLeft(this.y));
+      }
     },
 
     changeLegend() {
@@ -233,6 +437,26 @@ export default {
       this.svg.selectAll('*').remove();
       this.changeLegend();
       this.toggleButton = false;
+    },
+
+    selected() {
+      this.svg.selectAll('path').remove();
+      this.svg.selectAll('#circlePoints').remove();
+      if (this.selected === 'Valores Brutos da Agropecuária') {
+        this.target = 'ValorAdicionadoBrutoDaAgropecuariaPrecosCorrentesMilReais';
+      }
+
+      if (this.selected === 'Valores Brutos da Indústria') {
+        this.target = 'ValorAdicionadoBrutoDaIndustriaPrecosCorrentesMilReais';
+      }
+
+      if (this.selected === 'Valores Brutos dos Serviços') {
+        this.target = 'ValorAdicionadoBrutoDosServicosPrecosCorrentesExcetoAdministracaoDefesaEducacaoSaudePublicasESeguridadeSocialMilReais';
+      }
+
+      if (this.selected === 'PIB total') {
+        this.target = 'ProdutoInternoBrutoPrecosCorrentesMilReais';
+      }
     },
   },
 };
